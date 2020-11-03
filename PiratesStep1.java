@@ -89,7 +89,7 @@ public class PiratesStep1 {
 		
 		
 		// Add the pirate ship
-		JLabel shipImage = new JLabel(new ImageIcon("resources/pirate-ship.png"));
+		JLabel shipImage = createScaledImage("resources/pirate-ship.png", 40, 40);
 		shipImage.setSize(40, 40);
 		gamePanel.add(shipImage, Integer.valueOf(100));
 		
