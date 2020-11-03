@@ -1,4 +1,5 @@
 // Import the GUI libraries
+
 import javax.swing.*;
 import javax.swing.border.*;
 import java.awt.*;
@@ -33,20 +34,67 @@ public class PiratesStep1 {
 	 * This method is called by the main method to set up the main GUI window.
 	 */
 	private static void createMainWindow () {
+	
+		
 		// Create and set up the window.
 		JFrame frame = new JFrame ("Pirates");
 		frame.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
 		frame.setResizable (false);
 
+		
 		// The panel that will hold the components in the frame.
 		JPanel contentPane = new JPanel ();
-
-		// TODO: Add the components to the view
+		contentPane.setPreferredSize(new Dimension(950, 400));
+		contentPane.setLayout(new BorderLayout());
+		
+		// Create the right action panel
+		JPanel rightPanel = new JPanel();
+		rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.PAGE_AXIS));
+		contentPane.add(rightPanel, BorderLayout.EAST);
+		
+		
+		// Add the score label
+		JLabel scoreTitleLabel = new JLabel("Score");
+		scoreTitleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+		rightPanel.add(scoreTitleLabel);
+		
+		JLabel scoreNumberLabel = new JLabel("0");
+		scoreNumberLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+		rightPanel.add(scoreNumberLabel);
+		
+		JLabel actionsTitleLabel = new JLabel("Actions");
+		actionsTitleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+		rightPanel.add(actionsTitleLabel);
+		
+		JButton newGameButton = new JButton("New Game");
+		newGameButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+		rightPanel.add(newGameButton);
+		
+		JButton musicButton = new JButton ("Music Off");
+		musicButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+		rightPanel.add(musicButton);
+	
+		JButton quitButton = new JButton("Quit");
+		quitButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+		rightPanel.add(quitButton);
+		
+		
+        // Add the map
+		JLayeredPane gamePanel = new JLayeredPane();
+		contentPane.add(gamePanel);
+		
+		JLabel mapImage = new JLabel(new ImageIcon("resources/world-map-animals.jpg"));
+		mapImage.setSize(775, 400);
+		gamePanel.add(mapImage);
+		
+		
+		// Add the components to the view
 		
 
 		// Add the panel to the frame
 		frame.setContentPane(contentPane);
 
+	
 		//size the window.
 		frame.pack();
 		frame.setLocationRelativeTo(null);
