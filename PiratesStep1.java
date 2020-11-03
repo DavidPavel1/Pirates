@@ -93,6 +93,14 @@ public class PiratesStep1 {
 		shipImage.setSize(40, 40);
 		gamePanel.add(shipImage, Integer.valueOf(100));
 		
+		
+		// Put ship at random location
+		Random randomGenerator = new Random();
+		int pirateX = randomGenerator.nextInt(735);
+		int pirateY = randomGenerator.nextInt(360);
+		shipImage.setLocation(pirateX, pirateY);
+		
+		
 		// Add the components to the view
 		
 
