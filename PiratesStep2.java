@@ -25,34 +25,37 @@ public class PiratesStep2 {
 	 * Declare the objects and variables that you want to access across
 	 * multiple methods.
 	 */
-	
+
 	static JLabel pirateShip;
-	
+
 	static int score = 0;
 	static JLabel scoreLabel;
+	
+	static Timer moveTimer;
+	static int speed = 2000;
 
 	/**
 	 * CREATE MAIN WINDOW
 	 * This method is called by the main method to set up the main GUI window.
 	 */
 	private static void createMainWindow () {
-		
-		
+
+
 		// Create and set up the window.
 		JFrame frame = new JFrame ("Pirates");
 		frame.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
 		frame.setResizable (false);
 
-		
+
 		// The panel that will hold the components in the frame.
 		JPanel contentPane = new JPanel ();
 		contentPane.setPreferredSize(new Dimension(950, 400));
 
-		
+
 		// Making the content pane use BorderLayout
 		contentPane.setLayout(new BorderLayout());
 
-		
+
 		// Make the side panel
 		JPanel sideBar = new JPanel();
 		sideBar.setLayout(new BoxLayout(sideBar, BoxLayout.PAGE_AXIS));
@@ -60,24 +63,24 @@ public class PiratesStep2 {
 		sideBar.setBorder(new EmptyBorder(20, 20, 20, 20));
 		contentPane.add(sideBar, BorderLayout.EAST);
 
-		
+
 		// Make the score title
 		JLabel scoreTitle = new JLabel("Score");
 		scoreTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
 		sideBar.add(scoreTitle);
 		sideBar.add(Box.createRigidArea(new Dimension(135, 10)));
 
-		
+
 		// Make the score label
 		scoreLabel = new JLabel("0");
 		scoreLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 		sideBar.add(scoreLabel);
 
-		
+
 		// Add the filler "glue"
 		sideBar.add(Box.createVerticalGlue());
 
-		
+
 		// Make sidebar title
 		JLabel actionsLabel = new JLabel("Actions");
 		actionsLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -86,10 +89,11 @@ public class PiratesStep2 {
 		sideBar.add(actionsLabel);
 		sideBar.add(Box.createRigidArea(new Dimension(135, 10)));
 
-		
+
 		// Make sidebar buttons
 		JButton newGameButton = new JButton("New Game");
 		newGameButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+		newGameButton.addActionListener(new NewGameHandler());
 		sideBar.add(newGameButton);
 		sideBar.add(Box.createRigidArea(new Dimension(135, 10)));
 
@@ -103,19 +107,19 @@ public class PiratesStep2 {
 		quitButton.addActionListener(new QuitButtonListener());
 		sideBar.add(quitButton);
 
-		
+
 		// Make the center "map" panel
 		JLayeredPane mapPanel = new JLayeredPane();
 		contentPane.add(mapPanel, BorderLayout.CENTER);
 
-		
+
 		// Get the map image
 		JLabel mapImage = new JLabel(new ImageIcon("resources/world-map-animals.jpg"));
 		mapPanel.add(mapImage, Integer.valueOf(-300));
 		mapImage.setSize(775, 400);
 		mapImage.setLocation(0, 0);
 
-		
+
 		// Create the pirate ship
 		pirateShip = createScaledImage("resources/pirate-ship.png", 40, 40);
 		pirateShip.setSize(40, 40);
@@ -125,12 +129,17 @@ public class PiratesStep2 {
 		pirateShip.setLocation(pirateX, pirateY);
 		pirateShip.addMouseListener(new ShipMouseHandler());
 		mapPanel.add(pirateShip);
-
 		
+		
+		// Create timer that moves the pirate ship
+		moveTimer = new Timer(2000, new MoveShipHandler());
+		moveTimer.start();
+
+
 		// Add the panel to the frame
 		frame.setContentPane(contentPane);
 
-		
+
 		//size the window.
 		frame.pack();
 		frame.setLocationRelativeTo(null);
@@ -149,6 +158,17 @@ public class PiratesStep2 {
 		Image scaledImage = originalImage.getScaledInstance(width, height, Image.SCALE_SMOOTH);
 		return new JLabel(new ImageIcon(scaledImage));
 	}
+	
+	/** Move the ship to a random location */
+	private static void moveShip() {
+		Random randomGenerator = new Random();
+		int pirateX = randomGenerator.nextInt(735);
+		int pirateY = randomGenerator.nextInt(300);
+		pirateShip.setLocation(pirateX, pirateY);
+	}
+
+	 
+	 
 
 
 	/**
@@ -167,38 +187,89 @@ public class PiratesStep2 {
 			}
 		}
 	}
-	
-	
+
+
 	/** This listens for mouse interactions with the pirate ship*/
-    private static class ShipMouseHandler implements MouseListener {
+	private static class ShipMouseHandler implements MouseListener {
 
-        public void mouseClicked (MouseEvent event) {
-        	// Score up by 1 
-        	score ++;
-        	scoreLabel.setText(String.valueOf(score));
-        	
-        	// Ship to disappear
-        	pirateShip.setVisible(false);
-        }
+		public void mouseClicked (MouseEvent event) {
+			// Score up by 1 
+			score ++;
+			scoreLabel.setText(String.valueOf(score));
 
-        public void mousePressed (MouseEvent event) {
+			// Ship to disappear
+			pirateShip.setVisible(false);
+			
+			
+			// Make the speed faster
+			speed -= 50;
+			moveTimer.setDelay(speed);
+		}
 
-            // TODO: Actions to take when the component is clicked.
+		public void mousePressed (MouseEvent event) {
 
-        }
+			// TODO: Actions to take when the component is clicked.
 
-        public void mouseReleased (MouseEvent event) {
-        }
+		}
 
-        public void mouseEntered (MouseEvent event) {
-        }
-        
-        public void mouseExited (MouseEvent event) {
+		public void mouseReleased (MouseEvent event) {
+		}
 
-   
+		public void mouseEntered (MouseEvent event) {
+		}
+
+		public void mouseExited (MouseEvent event) {
+		}
+
+	}
+	
+	
+	/** Handles when the user clicks the new game button */
+	private static class NewGameHandler implements ActionListener {
+		public void actionPerformed (ActionEvent event) {
+			// Set score to 0
+			score = 0;
+			scoreLabel.setText("0");
+
+			// Move ship to new location
+			moveShip();
+			pirateShip.setVisible(true);
+			
+			// Reset speed
+			speed = 2000;
+			moveTimer.setDelay(2000);
+
+		}
+
+	}
+	
+	
+    /** Moves the pirate ship every time the timer expires*/
+    private static class MoveShipHandler implements ActionListener {
+        public void actionPerformed (ActionEvent event) {
+            // Move the ship to a new location
+        	moveShip();
+			pirateShip.setVisible(true);
 
         }
 
     }
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 }
